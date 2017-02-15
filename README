@@ -1,0 +1,12 @@
+
+
+注意:运行以下后 才可以访问项目中的接口
+
+##运行webserver json
+  //打开cmd或终端
+  //安装json-server
+  $ npm install -g json-server
+  //进入工程目录
+  $ cd SmallMvp（准确具体路径）
+  //运行服务
+  json-server --watch login.json
