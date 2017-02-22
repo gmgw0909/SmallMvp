@@ -20,5 +20,5 @@ public interface HomeApi {
      */
     @GET("home")
     Observable<BaseResponseBean<List<ContentInfo>>> home(
-            @Query("user_id") String password);
+            @Query("user_id") String user_id);
 }

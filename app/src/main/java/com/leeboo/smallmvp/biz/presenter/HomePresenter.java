@@ -8,8 +8,10 @@ import com.leeboo.smallmvp.api.AppNetRequest;
 import com.leeboo.smallmvp.base.BasePresenter;
 import com.leeboo.smallmvp.base.BaseResponseBean;
 import com.leeboo.smallmvp.base.BaseView;
-import com.leeboo.smallmvp.bean.UserInfo;
-import com.leeboo.smallmvp.biz.view.LoginView;
+import com.leeboo.smallmvp.bean.ContentInfo;
+import com.leeboo.smallmvp.biz.view.HomeView;
+
+import java.util.List;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -22,8 +24,8 @@ import rx.schedulers.Schedulers;
 
 public class HomePresenter implements BasePresenter {
     private Context context;
-    private LoginView loginView;
-    private UserInfo userInfo;
+    private HomeView homeView;
+    private List<ContentInfo> contentInfos;
     private ProgressDialog progressDialog;
 
     public void showProgressDialog(String message) {
@@ -63,7 +65,7 @@ public class HomePresenter implements BasePresenter {
 
     @Override
     public void attachView(BaseView view) {
-        loginView = (LoginView) view;
+        homeView = (HomeView) view;
     }
 
     @Override
@@ -71,25 +73,25 @@ public class HomePresenter implements BasePresenter {
 
     }
 
-    public void doLogin(String username, String password) {
-        AppNetRequest.getLoginApi().login(username, password)
+    public void getData(String user_id) {
+        AppNetRequest.getHomeApi().home(user_id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<BaseResponseBean<UserInfo>>() {
+                .subscribe(new Action1<BaseResponseBean<List<ContentInfo>>>() {
                     @Override
-                    public void call(BaseResponseBean<UserInfo> response) {
+                    public void call(BaseResponseBean<List<ContentInfo>> response) {
                         if (response != null && response.data != null) {
-                            userInfo = response.data;
-                            loginView.onSuccess(userInfo);
+                            contentInfos = response.data;
+                            homeView.onSuccess(contentInfos);
                         } else {
-                            loginView.onError("data==null");
+                            homeView.onError("data==null");
                         }
                         dismissProgressDialog();
                     }
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
-                        loginView.onError(throwable.getMessage());
+                        homeView.onError(throwable.getMessage());
                         dismissProgressDialog();
                     }
                 });
